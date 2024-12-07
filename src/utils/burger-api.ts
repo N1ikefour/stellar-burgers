@@ -137,7 +137,7 @@ export type TRegisterData = {
   password: string;
 };
 
-export type TAuthResponse = TServerResponse<{
+type TAuthResponse = TServerResponse<{
   refreshToken: string;
   accessToken: string;
   user: TUser;
@@ -153,11 +153,7 @@ export const registerUserApi = (data: TRegisterData) =>
   })
     .then((res) => checkResponse<TAuthResponse>(res))
     .then((data) => {
-      if (data?.success) {
-        setCookie('accessToken', data.accessToken);
-        localStorage.setItem('refreshToken', data.refreshToken);
-        return data;
-      }
+      if (data?.success) return data;
       return Promise.reject(data);
     });
 
@@ -176,20 +172,8 @@ export const loginUserApi = (data: TLoginData) =>
   })
     .then((res) => checkResponse<TAuthResponse>(res))
     .then((data) => {
-      // Проверка наличия токенов
-      if (data?.success && data.refreshToken && data.accessToken) {
-        setCookie('accessToken', data.accessToken);
-        localStorage.setItem('refreshToken', data.refreshToken);
-        console.log('Received data:', data);
-        console.log('Tokens set successfully', {
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken
-        });
-        return data;
-      } else {
-        console.error('Login failed: Tokens not received from server', data);
-        return Promise.reject(new Error('Login failed: Tokens not received'));
-      }
+      if (data?.success) return data;
+      return Promise.reject(data);
     });
 
 export const forgotPasswordApi = (data: { email: string }) =>
@@ -239,35 +223,13 @@ export const updateUserApi = (user: Partial<TRegisterData>) =>
     body: JSON.stringify(user)
   });
 
-export const logoutApi = () => {
-  const refreshToken = localStorage.getItem('refreshToken');
-
-  if (!refreshToken) {
-    return Promise.reject(new Error('No refresh token found'));
-  }
-
-  return fetch(`${URL}/auth/logout`, {
+export const logoutApi = () =>
+  fetch(`${URL}/auth/logout`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8'
     },
-    body: JSON.stringify({ token: refreshToken })
-  })
-    .then((res) => checkResponse<TServerResponse<{}>>(res))
-    .then((data) => {
-      if (data.success) {
-        // Удаляем токены при успешном логауте
-        setCookie('accessToken', '', { expires: -1 });
-        localStorage.removeItem('refreshToken');
-        return data;
-      } else {
-        return Promise.reject(
-          new Error('Logout failed: Server response error')
-        );
-      }
+    body: JSON.stringify({
+      token: localStorage.getItem('refreshToken')
     })
-    .catch((err) => {
-      console.error('Logout error:', err);
-      return Promise.reject(new Error('Logout failed: ' + err.message));
-    });
-};
+  }).then((res) => checkResponse<TServerResponse<{}>>(res));
