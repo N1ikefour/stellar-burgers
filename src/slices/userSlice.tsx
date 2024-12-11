@@ -29,13 +29,7 @@ export const initialState: IUserState = {
 
 export const registerUser = createAsyncThunk(
   'user/register',
-  async (data: TRegisterData, { rejectWithValue }) => {
-    try {
-      return await registerUserApi(data);
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  }
+  async (data: TRegisterData, { rejectWithValue }) => registerUserApi(data)
 );
 
 export const loginUser = createAsyncThunk(
