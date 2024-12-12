@@ -29,53 +29,32 @@ export const initialState: IUserState = {
 
 export const registerUser = createAsyncThunk(
   'user/register',
-  async (data: TRegisterData, { rejectWithValue }) => registerUserApi(data)
+  async (data: TRegisterData, { rejectWithValue }) =>
+    await registerUserApi(data).catch((error) => rejectWithValue(error.message))
 );
 
 export const loginUser = createAsyncThunk(
   'user/login',
-  async (data: TLoginData, { rejectWithValue }) => {
-    try {
-      return await loginUserApi(data);
-    } catch (err: any) {
-      return rejectWithValue(err.message);
-    }
-  }
+  async (data: TLoginData, { rejectWithValue }) =>
+    await loginUserApi(data).catch((error) => rejectWithValue(error.message))
 );
 
 export const logoutUser = createAsyncThunk(
   'user/logout',
-  async (_, { rejectWithValue }) => {
-    try {
-      await logoutApi();
-      return;
-    } catch (err: any) {
-      return rejectWithValue(err.message);
-    }
-  }
+  async (_, { rejectWithValue }) =>
+    await logoutApi().catch((error) => rejectWithValue(error.message))
 );
 
 export const getUser = createAsyncThunk(
   'user/getUser',
-  async (_, { rejectWithValue }) => {
-    try {
-      return await getUserApi();
-    } catch (err: any) {
-      return rejectWithValue(err.message);
-    }
-  }
+  async (_, { rejectWithValue }) =>
+    await getUserApi().catch((error) => rejectWithValue(error.message))
 );
 
 export const updateUser = createAsyncThunk(
   'user/updateUser',
-  async (user: Partial<TRegisterData>, { rejectWithValue }) => {
-    try {
-      const response = await updateUserApi(user);
-      return response.user;
-    } catch (err: any) {
-      return rejectWithValue(err.message);
-    }
-  }
+  async (user: Partial<TRegisterData>, { rejectWithValue }) =>
+    await updateUserApi(user).catch((error) => rejectWithValue(error.message))
 );
 
 export const userSlice = createSlice({
@@ -142,7 +121,7 @@ export const userSlice = createSlice({
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload;
+        state.user = action.payload.user;
         state.isAuthenticated = true;
         state.error = null;
       })

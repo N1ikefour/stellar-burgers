@@ -67,6 +67,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+        <Route path='/profile/orders/:number' element={<OrderInfo />} />
         <Route
           path='/register'
           element={
@@ -157,16 +158,14 @@ const App = () => {
           <Route
             path='/profile/orders/:number'
             element={
-              <ProtectedRoute>
-                <div className={styles.detailPageWrap}>
-                  <p
-                    className={`text text_type_dights-default ${styles.detailHeader}`}
-                  >
-                    #{orderNumber && orderNumber.padStart(6, '0')}
-                  </p>
+              <Modal
+                title={`#${location.pathname.match(/\d+/)}`}
+                onClose={() => navigate(-1)}
+              >
+                <ProtectedRoute>
                   <OrderInfo />
-                </div>
-              </ProtectedRoute>
+                </ProtectedRoute>
+              </Modal>
             }
           />
         </Routes>
