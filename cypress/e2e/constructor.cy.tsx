@@ -1,3 +1,5 @@
+const MODAL_SELECTOR = '[data-cy=modal]';
+
 describe('Проверка функциональности конструктора бургера', () => {
   const url = 'http://localhost:4000';
 
@@ -36,22 +38,22 @@ describe('Проверка функциональности конструкто
     });
 
     it('открытие модального окна ингредиента', () => {
-      cy.get('[data-cy=modal]').should('not.exist');
+      cy.get(MODAL_SELECTOR).should('not.exist');
       cy.get('@ingredient').click();
-      cy.get('[data-cy=modal]').should('be.visible');
+      cy.get(MODAL_SELECTOR).should('be.visible');
       cy.contains('Детали ингридиента').should('exist');
     });
     it('закрытие по клику на крестик', () => {
       cy.get('@ingredient').click();
-      cy.get('[data-cy=modal]').should('be.visible');
+      cy.get(MODAL_SELECTOR).should('be.visible');
       cy.get('[data-cy=close-button]').click();
-      cy.get('[data-cy=modal]').should('not.exist');
+      cy.get(MODAL_SELECTOR).should('not.exist');
     });
     it('закрытие по клику на оверлей', () => {
       cy.get('@ingredient').click();
-      cy.get('[data-cy=modal]').should('be.visible');
+      cy.get(MODAL_SELECTOR).should('be.visible');
       cy.get('[data-cy=overlay]').click({ force: true });
-      cy.get('[data-cy=modal]').should('not.exist');
+      cy.get(MODAL_SELECTOR).should('not.exist');
     });
   });
 
@@ -95,7 +97,7 @@ describe('Проверка функциональности конструкто
         fixture: 'order.json'
       }).as('postOrders');
 
-      cy.get('[data-cy=modal]').should('not.exist');
+      cy.get(MODAL_SELECTOR).should('not.exist');
 
       const buttonAddBun = cy
         .get('h3')
@@ -118,11 +120,11 @@ describe('Проверка функциональности конструкто
       const buttonMakeOrder = cy.contains('Оформить заказ');
       buttonMakeOrder.click();
 
-      cy.get('[data-cy=modal]').should('be.visible');
+      cy.get(MODAL_SELECTOR).should('be.visible');
       cy.contains('60185').should('exist');
 
       cy.get('[data-cy=close-button]').click();
-      cy.get('[data-cy=modal]').should('not.exist');
+      cy.get(MODAL_SELECTOR).should('not.exist');
       cy.contains('60185').should('not.exist');
 
       cy.contains('Выберите булки').should('exist');
