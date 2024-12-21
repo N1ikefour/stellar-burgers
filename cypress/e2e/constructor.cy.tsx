@@ -1,10 +1,13 @@
-const MODAL_SELECTOR = '[data-cy=modal]';
-
 describe('Проверка функциональности конструктора бургера', () => {
   const url = 'http://localhost:4000';
+  const MODAL_SELECTOR = '[data-cy=modal]';
+  const SELECT_BUNS_TEXT = 'Выберите булки';
+  const SELECT_FILLING_TEXT = 'Выберите начинку';
+  const BUNS_SECTION_TITLE = 'Булки';
+  const FILLINGS_SECTION_TITLE = 'Начинки';
 
   it('Сервер должен быть доступен по адресу: localhost:4000', () => {
-    cy.visit(url);
+    cy.visit('/');
   });
 
   beforeEach(() => {
@@ -21,7 +24,7 @@ describe('Проверка функциональности конструкто
     cy.setCookie('accessToken', 'mockAccessToken');
     localStorage.setItem('refreshToken', 'mockRefreshToken');
 
-    cy.visit(url);
+    cy.visit('http://localhost:4000');
   });
 
   afterEach(() => {
@@ -60,35 +63,35 @@ describe('Проверка функциональности конструкто
   describe('Создание заказа', () => {
     describe('Добавление ингредиентов в конструктор бургера', () => {
       it('Добавление булки', () => {
-        cy.get('div').contains('Выберите булки').should('exist');
+        cy.get('div').contains(SELECT_BUNS_TEXT).should('exist');
         const buttonAddBun = cy
           .get('h3')
-          .contains('Булки')
+          .contains(BUNS_SECTION_TITLE)
           .next('ul')
           .contains('Добавить');
         buttonAddBun.click();
-        cy.get('div').contains('Выберите булки').should('not.exist');
+        cy.get('div').contains(SELECT_BUNS_TEXT).should('not.exist');
       });
 
       it('Добавление начинки', () => {
-        cy.get('div').contains('Выберите начинку').should('exist');
+        cy.get('div').contains(SELECT_FILLING_TEXT).should('exist');
         const buttonAddMain = cy
           .get('h3')
-          .contains('Начинки')
+          .contains(FILLINGS_SECTION_TITLE)
           .next('ul')
           .contains('Добавить');
         buttonAddMain.click();
-        cy.get('div').contains('Выберите начинку').should('not.exist');
+        cy.get('div').contains(SELECT_FILLING_TEXT).should('not.exist');
       });
       it('Добавление соусов', () => {
-        cy.get('div').contains('Выберите начинку').should('exist');
+        cy.get('div').contains(SELECT_FILLING_TEXT).should('exist');
         const buttonAddSauce = cy
           .get('h3')
           .contains('Соусы')
           .next('ul')
           .contains('Добавить');
         buttonAddSauce.click();
-        cy.get('div').contains('Выберите начинку').should('not.exist');
+        cy.get('div').contains(SELECT_FILLING_TEXT).should('not.exist');
       });
     });
 
@@ -101,12 +104,12 @@ describe('Проверка функциональности конструкто
 
       const buttonAddBun = cy
         .get('h3')
-        .contains('Булки')
+        .contains(BUNS_SECTION_TITLE)
         .next('ul')
         .contains('Добавить');
       const buttonAddMain = cy
         .get('h3')
-        .contains('Начинки')
+        .contains(FILLINGS_SECTION_TITLE)
         .next('ul')
         .contains('Добавить');
       const buttonAddSauce = cy
@@ -127,8 +130,8 @@ describe('Проверка функциональности конструкто
       cy.get(MODAL_SELECTOR).should('not.exist');
       cy.contains('60185').should('not.exist');
 
-      cy.contains('Выберите булки').should('exist');
-      cy.contains('Выберите начинку').should('exist');
+      cy.contains(SELECT_BUNS_TEXT).should('exist');
+      cy.contains(SELECT_FILLING_TEXT).should('exist');
     });
   });
 });
